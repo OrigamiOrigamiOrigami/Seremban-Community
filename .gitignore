@@ -1,27 +1,43 @@
+# ===== Java/Maven =====
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
 
-### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
+# ===== Spring Boot =====
+*.log
+logs/
+spring.log
+application-*.yml
+application-*.properties
+!application.yml
+!application.properties
+
+# ===== IntelliJ IDEA =====
+.idea/
 *.iws
 *.iml
 *.ipr
+out/
 
-### Eclipse ###
+# ===== Eclipse =====
 .apt_generated
 .classpath
 .factorypath
 .project
-.settings
+.settings/
 .springBeans
 .sts4-cache
+bin/
 
-### NetBeans ###
+# ===== NetBeans =====
 /nbproject/private/
 /nbbuild/
 /dist/
@@ -31,8 +47,132 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
+# ===== VS Code =====
 .vscode/
 
-### Mac OS ###
+# ===== Node.js/Vue.js =====
+hospital_web/node_modules/
+hospital_web/dist/
+hospital_web/.nuxt/
+hospital_web/.next/
+hospital_web/.cache/
+hospital_web/coverage/
+hospital_web/.nyc_output/
+hospital_web/npm-debug.log*
+hospital_web/yarn-debug.log*
+hospital_web/yarn-error.log*
+hospital_web/lerna-debug.log*
+hospital_web/.pnpm-debug.log*
+hospital_web/package-lock.json
+hospital_web/yarn.lock
+hospital_web/pnpm-lock.yaml
+
+# ===== 操作系统 =====
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ===== 临时文件 =====
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.#*
+#*#
+
+# ===== 数据库 =====
+*.db
+*.sqlite
+*.sqlite3
+
+# ===== 上传文件目录 =====
+uploads/
+/D:/uploads/
+
+# ===== 环境配置文件 =====
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+# 保留默认环境配置文件，忽略本地覆盖文件
+!hospital_web/.env.development
+!hospital_web/.env.production
+!hospital_web/.env.staging
+
+# ===== 备份文件 =====
+*.bak
+*.backup
+*.orig
+
+# ===== 压缩文件 =====
+*.zip
+*.rar
+*.7z
+*.tar.gz
+*.tar.bz2
+
+# ===== 文档生成 =====
+/docs/build/
+/docs/.vuepress/dist/
+
+# ===== 测试覆盖率 =====
+coverage/
+*.lcov
+.nyc_output/
+
+# ===== 缓存目录 =====
+.cache/
+.parcel-cache/
+.eslintcache
+
+# ===== 项目特定 =====
+# 医院管理系统特定忽略文件
+/logs/
+/log/
+*.log.*
+/temp/
+/tmp/
+
+# 数据库连接配置（如果包含敏感信息）
+**/application-dev.yml
+**/application-test.yml
+**/application-prod.yml
+
+# 文件上传目录
+/uploads/
+**/uploads/
+/static/uploads/
+
+# 证书和密钥文件
+*.p12
+*.jks
+*.keystore
+*.pem
+*.key
+*.crt
+
+# 配置文件备份
+*.yml.bak
+*.properties.bak
+*.xml.bak
+
+# IDE 生成的文件
+.factorypath
+.apt_generated_tests/
+
+# Maven Wrapper
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.properties
+
+# Gradle
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties

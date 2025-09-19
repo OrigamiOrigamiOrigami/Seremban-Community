@@ -1,0 +1,47 @@
+// 医疗主题色彩系统
+$primary: #1890ff;        // 主色调 - 医疗蓝
+$primary-light: #40a9ff;  // 浅主色
+$primary-dark: #096dd9;   // 深主色
+
+$success: #52c41a;        // 成功色 - 健康绿
+$warning: #faad14;        // 警告色 - 温馨橙
+$danger: #ff4d4f;         // 危险色 - 医疗红
+$info: #13c2c2;           // 信息色 - 清新青
+
+// 中性色
+$text-primary: #262626;   // 主文本
+$text-secondary: #595959; // 次要文本
+$text-disabled: #bfbfbf;  // 禁用文本
+$border-color: #d9d9d9;   // 边框色
+$background: #f0f2f5;     // 背景色
+$white: #ffffff;
+
+// 渐变色
+$gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+$gradient-medical: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+
+// sidebar 侧边栏
+$menuText: #8c8c8c;
+$menuActiveText: $primary;
+$subMenuActiveText: $white;
+
+$menuBg: $white;
+$menuHover: #f0f2f5;
+$subMenuBg: #f6f8fa;
+$subMenuHover: #e6f7ff;
+
+$sideBarWidth: 220px;
+
+// the :export directive is the magic sauce for webpack
+// https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass
+:export {
+  menuText: $menuText;
+  menuActiveText: $menuActiveText;
+  subMenuActiveText: $subMenuActiveText;
+  menuBg: $menuBg;
+  menuHover: $menuHover;
+  subMenuBg: $subMenuBg;
+  subMenuHover: $subMenuHover;
+  sideBarWidth: $sideBarWidth;
+}

@@ -2,12 +2,12 @@ package com.furong.admin;
 
 import com.furong.admin.mapper.DepartmentMapper;
 import com.furong.pojo.entity.Department;
+import com.mybatisflex.core.paginate.Page;
+import com.mybatisflex.core.query.QueryWrapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.util.StopWatch;
 
-import java.util.Date;
 import java.util.List;
 
 @SpringBootTest
@@ -47,5 +47,13 @@ public class DepartmentMapperTest {
     public void selectMapper() {
         List<Department> department = departmentMapper.selectAll();
         System.out.println(department);
+    }
+
+    @Test
+    public void testPage(){
+        QueryWrapper queryWrapper = QueryWrapper.create();
+        queryWrapper.eq(Department::getType,1).like(Department::getName,"测");
+        Page<Department> list = departmentMapper.paginate(1, 10, queryWrapper);
+        System.out.println(list);
     }
 }

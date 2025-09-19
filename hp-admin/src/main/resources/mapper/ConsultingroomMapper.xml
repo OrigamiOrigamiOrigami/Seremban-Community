@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.furong.admin.mapper.ConsultingroomMapper">
+
+    <select id="selectConsultingroomPage" resultType="com.furong.pojo.vo.ConsultingroomVo">
+        SELECT 
+            c.id,
+            c.name,
+            c.department_id as departmentId,
+            d.name as departmentName,
+            c.description,
+            c.status,
+            c.created,
+            c.updated
+        FROM fr_consultingroom c
+        LEFT JOIN fr_department d ON c.department_id = d.id
+        WHERE c.deleted = 0
+        <if test="name != null and name != ''">
+            AND c.name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="departmentId != null">
+            AND c.department_id = #{departmentId}
+        </if>
+        <if test="status != null">
+            AND c.status = #{status}
+        </if>
+        <!-- 手动添加租户条件 - 这是自定义SQL必须要做的 -->
+        <if test="tenantId != null">
+            AND c.tenant_id = #{tenantId}
+            AND d.tenant_id = #{tenantId}
+        </if>
+        ORDER BY c.created DESC
+    </select>
+
+</mapper>

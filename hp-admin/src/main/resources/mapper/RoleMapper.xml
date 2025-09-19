@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.furong.admin.mapper.RoleMapper">
+
+    <!-- 权限VO结果映射 -->
+    <resultMap id="PermissionVoResultMap" type="com.furong.pojo.vo.PermissionVo">
+        <id column="p_id" property="id"/>
+        <result column="p_permission_name" property="permissionName"/>
+        <result column="p_permission_code" property="permissionCode"/>
+        <result column="p_description" property="description"/>
+        <result column="p_created" property="created"/>
+        <result column="p_updated" property="updated"/>
+    </resultMap>
+
+    <!-- 角色VO结果映射 -->
+    <resultMap id="RoleVoResultMap" type="com.furong.pojo.vo.RoleVo">
+        <id column="id" property="id"/>
+        <result column="role_name" property="roleName"/>
+        <result column="description" property="description"/>
+        <result column="created" property="created"/>
+        <result column="updated" property="updated"/>
+        <result column="admin_count" property="adminCount"/>
+        <collection property="permissions" resultMap="PermissionVoResultMap"/>
+    </resultMap>
+
+    <!-- 获取角色列表（包含统计信息） -->
+    <select id="selectRoleList" resultType="com.furong.pojo.vo.RoleVo">
+        SELECT 
+            r.id,
+            r.role_name,
+            r.description,
+            r.created,
+            r.updated,
+            COALESCE(ar_count.admin_count, 0) as admin_count
+        FROM fr_role r
+        LEFT JOIN (
+            SELECT 
+                role_id,
+                COUNT(DISTINCT admin_id) as admin_count
+            FROM fr_admin_role ar
+            INNER JOIN fr_admin a ON ar.admin_id = a.id AND a.deleted = 0
+            GROUP BY role_id
+        ) ar_count ON r.id = ar_count.role_id
+        WHERE r.deleted = 0
+        ORDER BY r.created DESC
+    </select>
+
+    <!-- 分页查询角色列表（包含统计信息和搜索条件） -->
+    <select id="selectRoleListWithPage" resultType="com.furong.pojo.vo.RoleVo">
+        SELECT
+            r.id,
+            r.role_name,
+            r.description,
+            r.created,
+            r.updated,
+            COALESCE(ar_count.admin_count, 0) as admin_count
+        FROM fr_role r
+        LEFT JOIN (
+            SELECT
+                role_id,
+                COUNT(DISTINCT admin_id) as admin_count
+            FROM fr_admin_role ar
+            INNER JOIN fr_admin a ON ar.admin_id = a.id AND a.deleted = 0
+            GROUP BY role_id
+        ) ar_count ON r.id = ar_count.role_id
+        WHERE r.deleted = 0
+        <if test="roleName != null and roleName != ''">
+            AND r.role_name LIKE CONCAT('%', #{roleName}, '%')
+        </if>
+        <if test="description != null and description != ''">
+            AND r.description LIKE CONCAT('%', #{description}, '%')
+        </if>
+        ORDER BY r.created DESC
+    </select>
+
+    <!-- 获取角色详情（包含权限信息） -->
+    <select id="selectRoleDetail" resultMap="RoleVoResultMap">
+        SELECT 
+            r.id,
+            r.role_name,
+            r.description,
+            r.created,
+            r.updated,
+            COALESCE(ar_count.admin_count, 0) as admin_count,
+            p.id as p_id,
+            p.permission_name as p_permission_name,
+            p.permission_code as p_permission_code,
+            p.description as p_description,
+            p.created as p_created,
+            p.updated as p_updated
+        FROM fr_role r
+        LEFT JOIN (
+            SELECT 
+                role_id,
+                COUNT(DISTINCT admin_id) as admin_count
+            FROM fr_admin_role ar
+            INNER JOIN fr_admin a ON ar.admin_id = a.id AND a.deleted = 0
+            GROUP BY role_id
+        ) ar_count ON r.id = ar_count.role_id
+        LEFT JOIN fr_role_permission rp ON r.id = rp.role_id
+        LEFT JOIN fr_permission p ON rp.permission_id = p.id AND p.deleted = 0
+        WHERE r.id = #{id} AND r.deleted = 0
+        ORDER BY p.created DESC
+    </select>
+
+    <!-- 获取管理员的角色列表 -->
+    <select id="selectAdminRoles" resultType="com.furong.pojo.entity.Role">
+        SELECT r.*
+        FROM fr_role r
+        INNER JOIN fr_admin_role ar ON r.id = ar.role_id
+        WHERE ar.admin_id = #{adminId} AND r.deleted = 0
+        ORDER BY r.created DESC
+    </select>
+
+    <!-- 获取角色的权限ID列表 -->
+    <select id="selectRolePermissionIds" resultType="java.lang.Long">
+        SELECT rp.permission_id
+        FROM fr_role_permission rp
+        INNER JOIN fr_permission p ON rp.permission_id = p.id AND p.deleted = 0
+        WHERE rp.role_id = #{roleId}
+        ORDER BY rp.permission_id
+    </select>
+
+    <!-- 删除角色的所有权限关联 -->
+    <delete id="deleteRolePermissions">
+        DELETE FROM fr_role_permission WHERE role_id = #{roleId}
+    </delete>
+
+    <!-- 批量插入角色权限关联 -->
+    <insert id="insertRolePermissions">
+        <if test="permissionIds != null and permissionIds.size() > 0">
+            INSERT INTO fr_role_permission (role_id, permission_id)
+            VALUES
+            <foreach collection="permissionIds" item="permissionId" separator=",">
+                (#{roleId}, #{permissionId})
+            </foreach>
+        </if>
+    </insert>
+
+    <!-- 删除管理员的所有角色关联 -->
+    <delete id="deleteAdminRoles">
+        DELETE FROM fr_admin_role WHERE admin_id = #{adminId}
+    </delete>
+
+    <!-- 批量插入管理员角色关联 -->
+    <insert id="insertAdminRoles">
+        <if test="roleIds != null and roleIds.size() > 0">
+            INSERT INTO fr_admin_role (admin_id, role_id)
+            VALUES
+            <foreach collection="roleIds" item="roleId" separator=",">
+                (#{adminId}, #{roleId})
+            </foreach>
+        </if>
+    </insert>
+
+</mapper>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.furong.admin.mapper.AdminMapper">
+
+    <!-- 管理员信息VO结果映射（包含角色名称） -->
+    <resultMap id="AdminInfoVoResultMap" type="com.furong.pojo.vo.AdminInfoVo">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="username" property="username"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="image" property="image"/>
+        <result column="created" property="created"/>
+        <result column="updated" property="updated"/>
+        <result column="role_names" property="roleNames"/>
+    </resultMap>
+
+    <!-- 分页查询管理员列表（包含角色信息） -->
+    <select id="selectAdminListWithRoles" resultMap="AdminInfoVoResultMap">
+        SELECT 
+            a.id,
+            a.name,
+            a.username,
+            a.phone,
+            a.email,
+            a.image,
+            a.created,
+            a.updated,
+            GROUP_CONCAT(r.role_name SEPARATOR ', ') as role_names
+        FROM fr_admin a
+        LEFT JOIN fr_admin_role ar ON a.id = ar.admin_id
+        LEFT JOIN fr_role r ON ar.role_id = r.id AND r.deleted = 0
+        WHERE a.deleted = 0
+        <if test="name != null and name != ''">
+            AND a.name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="phone != null and phone != ''">
+            AND a.phone LIKE CONCAT('%', #{phone}, '%')
+        </if>
+        GROUP BY a.id, a.name, a.username, a.phone, a.email, a.image, a.created, a.updated
+        ORDER BY a.created DESC
+    </select>
+
+    <!-- 获取管理员详情（包含角色信息） -->
+    <select id="selectAdminDetailWithRoles" resultMap="AdminInfoVoResultMap">
+        SELECT
+            a.id,
+            a.name,
+            a.username,
+            a.phone,
+            a.email,
+            a.image,
+            a.created,
+            a.updated,
+            GROUP_CONCAT(r.role_name SEPARATOR ', ') as role_names
+        FROM fr_admin a
+        LEFT JOIN fr_admin_role ar ON a.id = ar.admin_id
+        LEFT JOIN fr_role r ON ar.role_id = r.id AND r.deleted = 0
+        WHERE a.id = #{adminId} AND a.deleted = 0
+        GROUP BY a.id, a.name, a.username, a.phone, a.email, a.image, a.created, a.updated
+    </select>
+
+</mapper>

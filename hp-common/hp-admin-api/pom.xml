@@ -27,6 +27,14 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- 分页助手 - 只需要编译时依赖 -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+            <version>5.3.2</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
 </project>
